@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전국 대학 선취업 후진학 & 특성화고 특별전형 대시보드</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts (Noto Sans KR & Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        teal: {
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        },
+                        sky: {
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        /* Custom scrollbar for better UI */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- Navbar -->
+    <header class="bg-navy-900 text-white sticky top-0 z-30 shadow-md no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-teal-500 to-sky-500 p-2 rounded-lg text-white">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">선취업 후진학 & 특성화고 전형 대시보드</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">전국 특성화고·마이스터고 졸업생 및 재직자 맞춤 대입 탐색</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button id="btnGithubGuide" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-1.5 transition shadow-sm">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">GitHub 무료 배포 가이드</span>
+                </button>
+                <button id="btnBookmarkModal" class="relative bg-navy-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-1 transition border border-slate-700">
+                    <i data-lucide="bookmark" class="w-4 h-4 text-amber-400"></i>
+                    <span class="hidden md:inline">스크랩 대학</span>
+                    <span id="bookmarkBadge" class="ml-1 bg-amber-500 text-slate-900 font-bold text-xs px-2 py-0.5 rounded-full">0</span>
+                </button>
+                <button id="btnCompareModal" class="bg-teal-600 hover:bg-teal-700 text-white px-3 py-2 rounded-lg text-sm font-medium flex items-center space-x-1 transition shadow-sm">
+                    <i data-lucide="columns" class="w-4 h-4"></i>
+                    <span class="hidden md:inline">상담 비교표</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-grow">
+        
+        <!-- Hero & Stats Header -->
+        <section class="mb-6 bg-white rounded-2xl p-6 shadow-sm border border-slate-200/80">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-semibold mb-2">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 교사 및 진학상담 교사 전용 포털
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">전국 주요 대학 진학 정보 안내</h2>
+                    <p class="text-sm text-slate-600 mt-1">특성화고 졸업(예정)자 및 3년 이상 재직자 전형의 핵심 요강을 실시간으로 검색 및 비교하세요.</p>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-[320px]">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                        <span class="block text-xs font-medium text-slate-500">총 등록 대학</span>
+                        <span id="statTotalUnis" class="text-xl font-bold text-navy-900">0</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                        <span class="block text-xs font-medium text-slate-500">총 모집 단위</span>
+                        <span id="statTotalDepts" class="text-xl font-bold text-sky-600">0</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                        <span class="block text-xs font-medium text-slate-500">수도권 비율</span>
+                        <span id="statMetroRatio" class="text-xl font-bold text-teal-600">0%</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-center">
+                        <span class="block text-xs font-medium text-slate-500">수능 최저 적용</span>
+                        <span id="statSuneungCount" class="text-xl font-bold text-amber-600">0개</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter & Search Controls -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 mb-6 no-print">
+            <!-- Search & Primary Filter -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-4">
+                <!-- Search Input -->
+                <div class="md:col-span-5 relative">
+                    <i data-lucide="search" class="w-5 h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="대학명, 학과명, 키워드 검색 (예: 중앙대, 경영, 컴퓨터)" 
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm">
+                </div>
+
+                <!-- Select: Admission Type -->
+                <div class="md:col-span-3">
+                    <select id="filterType" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm font-medium text-slate-700">
+                        <option value="ALL">전체 전형 보기</option>
+                        <option value="재직자">선취업 후진학 (재직자 전형)</option>
+                        <option value="특성화고">특성화고 특별전형</option>
+                    </select>
+                </div>
+
+                <!-- Select: Region -->
+                <div class="md:col-span-4">
+                    <select id="filterRegion" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm font-medium text-slate-700">
+                        <option value="ALL">전국 전체 권역</option>
+                        <option value="서울">서울</option>
+                        <option value="경기/인천">경기 · 인천</option>
+                        <option value="충청권">충청권 (대전·세종·충남·충북)</option>
+                        <option value="영남권">영남권 (대구·경북·부산·울산·경남)</option>
+                        <option value="호남/강원/제주">호남권 · 강원 · 제주</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Secondary Filters -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
+                <!-- Major Category -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">학과 계열</label>
+                    <select id="filterCategory" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <option value="ALL">전체 계열</option>
+                        <option value="경영/경제/사무">경영 · 경제 · 사무</option>
+                        <option value="IT/소프트웨어/AI">IT · SW · 인공지능</option>
+                        <option value="공학/신소재/기계">공학 · 신소재 · 기계</option>
+                        <option value="보건/간호/의료">보건 · 간호 · 의료</option>
+                        <option value="디자인/문화/예술">디자인 · 문화 · 예술</option>
+                        <option value="기타/융합">기타 · 융합학부</option>
+                    </select>
+                </div>
+
+                <!-- Suneung Cut -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">수능 최저학력기준</label>
+                    <select id="filterSuneung" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <option value="ALL">전체 (적용/미적용)</option>
+                        <option value="N">미적용 (수능 불필요)</option>
+                        <option value="Y">적용 있음</option>
+                    </select>
+                </div>
+
+                <!-- Work Experience -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">재직 기간 요건</label>
+                    <select id="filterWorkReq" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <option value="ALL">전체</option>
+                        <option value="3년이상">3년 이상 필수 (재직자)</option>
+                        <option value="없음">재직 요건 없음 (직전 졸업생 등)</option>
+                    </select>
+                </div>
+
+                <!-- Sort Order -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">정렬 방식</label>
+                    <select id="filterSort" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-700 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <option value="univAsc">대학명 순 (가나다)</option>
+                        <option value="quotaDesc">모집 인원 많은 순</option>
+                        <option value="region">권역별 순</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filter & Action Bar -->
+            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2">
+                    <span class="text-slate-500">검색 결과: <strong id="resultCount" class="text-sky-600 font-bold">0</strong>개 모집단위</span>
+                    <button id="btnResetFilters" class="text-slate-400 hover:text-slate-600 underline ml-2 flex items-center gap-1">
+                        <i data-lucide="rotate-ccw" class="w-3 h-3"></i> 필터 초기화
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <!-- View Mode Switches -->
+                    <div class="bg-slate-100 p-1 rounded-lg flex items-center space-x-1">
+                        <button id="btnViewGrid" class="px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-800 shadow-sm transition">
+                            <i data-lucide="layout-grid" class="w-3.5 h-3.5 inline mr-1"></i>카드
+                        </button>
+                        <button id="btnViewTable" class="px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition">
+                            <i data-lucide="table" class="w-3.5 h-3.5 inline mr-1"></i>표(Table)
+                        </button>
+                    </div>
+
+                    <button id="btnExportCSV" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 transition">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV 다운로드
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <section id="contentArea" class="min-h-[400px]">
+            <!-- Grid View Container -->
+            <div id="gridView" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+            <!-- Table View Container -->
+            <div id="tableView" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-600">
+                    <thead class="bg-slate-50 text-slate-700 font-semibold uppercase tracking-wider border-b border-slate-200">
+                        <tr>
+                            <th class="py-3 px-4">권역</th>
+                            <th class="py-3 px-4">대학명</th>
+                            <th class="py-3 px-4">모집 단위 (학과)</th>
+                            <th class="py-3 px-4">전형 구분</th>
+                            <th class="py-3 px-4 text-center">모집인원</th>
+                            <th class="py-3 px-4">전형 요소</th>
+                            <th class="py-3 px-4 text-center">수능최저</th>
+                            <th class="py-3 px-4 text-center">상세</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300">
+                <i data-lucide="search-x" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                <h3 class="text-base font-semibold text-slate-700">조건에 맞는 대학/학과가 없습니다.</h3>
+                <p class="text-xs text-slate-400 mt-1">검색어나 필터 조건을 변경해 다시 시도해 보세요.</p>
+                <button onclick="document.getElementById('btnResetFilters').click()" class="mt-4 px-4 py-2 bg-sky-600 text-white rounded-lg text-xs font-medium hover:bg-sky-700 transition">필터 초기화</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 no-print">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-medium text-slate-600">전국 대학 선취업 후진학 & 특성화고 특별전형 안내 시스템</p>
+            <p class="mt-1 text-slate-400">본 자료는 전국 주요 대학의 수시/정시 모집 요강 안내용 자료로, 최종 원서 접수 전 반드시 각 대학 입학처 공식 발표 수시 모집요강을 확인하시기 바랍니다.</p>
+        </div>
+    </footer>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <!-- Modal Header -->
+            <div class="p-6 bg-navy-900 text-white flex items-start justify-between">
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span id="modalRegionBadge" class="bg-teal-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">권역</span>
+                        <span id="modalTypeBadge" class="bg-sky-500 text-white text-[10px] font-bold px-2 py-0.5 rounded">전형명</span>
+                    </div>
+                    <h2 id="modalUnivName" class="text-2xl font-bold">대학명</h2>
+                    <p id="modalDeptName" class="text-slate-300 text-base font-medium mt-0.5">학과명</p>
+                </div>
+                <button id="btnCloseModal" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 overflow-y-auto space-y-5 text-sm">
+                <!-- Highlight Badges -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div>
+                        <span class="block text-xs text-slate-400">모집 인원</span>
+                        <span id="modalQuota" class="font-bold text-slate-800 text-base">0명</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs text-slate-400">수능 최저</span>
+                        <span id="modalSuneung" class="font-bold text-slate-800 text-base">-</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs text-slate-400">재직기간 요건</span>
+                        <span id="modalWorkReq" class="font-bold text-slate-800 text-base">-</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs text-slate-400">계열</span>
+                        <span id="modalCategory" class="font-bold text-slate-800 text-base">-</span>
+                    </div>
+                </div>
+
+                <!-- Section: Evaluation Ratio -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <i data-lucide="pie-chart" class="w-4 h-4 text-sky-600"></i> 전형 요소 및 반영 비율
+                    </h3>
+                    <div id="modalEvaluation" class="p-3 bg-white border border-slate-200 rounded-xl font-medium text-slate-800"></div>
+                </div>
+
+                <!-- Section: Qualification -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-teal-600"></i> 세부 지원 자격
+                    </h3>
+                    <div id="modalEligibility" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 leading-relaxed"></div>
+                </div>
+
+                <!-- Section: Suneung & Note -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <i data-lucide="alert-circle" class="w-4 h-4 text-amber-500"></i> 전형 특이사항 및 지도 팁
+                    </h3>
+                    <div id="modalNotes" class="p-3 bg-amber-50/50 border border-amber-200/60 rounded-xl text-amber-900 leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <button id="modalBtnBookmark" class="px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                        <i data-lucide="bookmark" class="w-4 h-4"></i> <span>스크랩 추가</span>
+                    </button>
+                    <button id="modalBtnCopy" class="px-3 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                        <i data-lucide="copy" class="w-4 h-4"></i> 내용 복사
+                    </button>
+                </div>
+                
+                <a id="modalUnivLink" href="#" target="_blank" rel="noopener noreferrer" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                    대학 입학처 홈페이지 <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bookmark / Scraps Modal -->
+    <div id="bookmarkModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="bookmark" class="w-5 h-5 text-amber-400"></i>
+                    <h2 class="text-lg font-bold">스크랩 관심 대학 목록</h2>
+                </div>
+                <button id="btnCloseBookmark" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto flex-grow">
+                <div id="bookmarkList" class="space-y-3"></div>
+                <div id="bookmarkEmpty" class="text-center py-10 text-slate-400 text-sm">
+                    아직 스크랩한 대학이 없습니다. 대학 카드에서 <i data-lucide="bookmark" class="w-3.5 h-3.5 inline text-amber-500"></i> 아이콘을 클릭해 보세요.
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs">
+                <span class="text-slate-500">저장된 관심 대학은 브라우저에 자동 보관됩니다.</span>
+                <button id="btnClearBookmarks" class="text-rose-600 hover:underline">전체 삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Consultation Comparison Modal -->
+    <div id="compareModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="p-5 bg-teal-700 text-white flex items-center justify-between no-print">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="columns" class="w-5 h-5"></i>
+                    <h2 class="text-lg font-bold">학생 상담용 대학 비교 리포트</h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="btnPrintCompare" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                        <i data-lucide="printer" class="w-4 h-4"></i> 인쇄하기
+                    </button>
+                    <button id="btnCloseCompare" class="text-white/80 hover:text-white p-1">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-grow" id="comparePrintArea">
+                <div class="mb-4 pb-3 border-b border-slate-200 flex items-center justify-between">
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">선취업후진학 / 특성화고 전형 상담 비교표</h1>
+                        <p class="text-xs text-slate-500">학생 맞춤형 대학 진학 가이드 리포트</p>
+                    </div>
+                    <div class="text-right text-xs text-slate-400">
+                        발행일: <span id="reportDate"></span>
+                    </div>
+                </div>
+
+                <div id="compareContent" class="overflow-x-auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GitHub Pages Deployment Guide Modal -->
+    <div id="githubModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="p-5 bg-indigo-900 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="github" class="w-6 h-6 text-indigo-300"></i>
+                    <div>
+                        <h2 class="text-lg font-bold leading-none">GitHub Pages 웹사이트 무료 공유 방법</h2>
+                        <p class="text-xs text-indigo-200 mt-1">서버 비용 없이 5분 만에 선생님 전용 진학 웹 대시보드 만들기</p>
+                    </div>
+                </div>
+                <button id="btnCloseGithub" class="text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6 text-slate-700 text-sm">
+                <!-- Step 1 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">HTML 파일 저장하기</h3>
+                        <p class="text-xs text-slate-600 mt-1">이 페이지 코드 전체를 복사하여 컴퓨터에 <code class="bg-slate-100 text-indigo-600 px-1.5 py-0.5 rounded font-mono font-semibold">index.html</code> 이름으로 저장합니다.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">GitHub Repository 생성</h3>
+                        <p class="text-xs text-slate-600 mt-1">
+                            <a href="https://github.com" target="_blank" class="text-indigo-600 underline font-semibold">GitHub.com</a> 로그인 후 오른쪽 상단 <strong>+</strong> 버튼 &gt; <strong>New repository</strong>를 클릭합니다.<br>
+                            Repository name에 <code class="bg-slate-100 px-1 py-0.5 rounded font-mono">admission-dashboard</code> 입력 후 Public으로 선택하고 Create 버튼을 누릅니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">index.html 업로드</h3>
+                        <p class="text-xs text-slate-600 mt-1">생성된 저장소 페이지에서 <strong>uploading an existing file</strong> 링크를 눌러 저장해 둔 <code class="bg-slate-100 text-indigo-600 px-1.5 py-0.5 rounded font-mono">index.html</code> 파일을 올리고 <strong>Commit changes</strong>를 클릭합니다.</p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-sm">4</div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 text-base">GitHub Pages 활성화</h3>
+                        <p class="text-xs text-slate-600 mt-1">
+                            상단 메뉴 <strong>Settings</strong> &gt; 좌측 <strong>Pages</strong> 선택 후,<br>
+                            Build and deployment의 Branch를 <code class="bg-slate-100 px-1.5 py-0.5 rounded font-semibold">main</code> (또는 master) 및 <code class="bg-slate-100 px-1.5 py-0.5 rounded font-semibold">/(root)</code>로 설정하고 <strong>Save</strong>를 클릭합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-xl flex items-start gap-3">
+                    <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 text-sm">완성된 무료 공유 웹 링크 생성!</h4>
+                        <p class="text-xs text-emerald-700 mt-1">
+                            약 1~2분 후 <code class="bg-white px-2 py-0.5 rounded text-emerald-900 font-mono font-semibold">https://&lt;아이디&gt;.github.io/admission-dashboard/</code> 형식의 고유 웹사이트 주소가 자동 발급됩니다.<br>
+                            이 링크를 동료 교사 카톡방, 학교 메신저, 구글 사이트에 바로 전달하실 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <button id="btnConfirmGithub" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs rounded-xl transition">확인했습니다</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all transform translate-y-20 opacity-0 z-50 text-xs font-medium">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toastMsg">메시지 내용</span>
+    </div>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Sample Dataset (National Key Universities: Specialized High School & Lifelong Learning / Work Experience Admissions)
+        const UNIVERSITY_DATA = [
+            // 서울권
+            {
+                id: 1,
+                univ: "중앙대학교",
+                dept: "지식경영학부",
+                region: "서울",
+                type: "재직자",
+                quota: 180,
+                category: "경영/경제/사무",
+                evaluation: "서류평가 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저학력기준 없음",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 산업체 재직 기간이 통산 3년 이상인 자",
+                notes: "수업은 주말(토요일) 및 야간/온라인 수업 혼합 진행. 야간 대학 대표 학부.",
+                link: "https://admission.cau.ac.kr"
+            },
+            {
+                id: 2,
+                univ: "경희대학교",
+                dept: "국제통상금융투자학과",
+                region: "서울",
+                type: "재직자",
+                quota: 85,
+                category: "경영/경제/사무",
+                evaluation: "서류평가 70% + 면접 30%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고·마이스터고 졸업자 중 산업체 근무 경력 3년 이상",
+                notes: "경희대 글로벌미래교육원 연계, 융합 실무 교육 중심 커리큘럼",
+                link: "https://iphak.khu.ac.kr"
+            },
+            {
+                id: 3,
+                univ: "건국대학교",
+                dept: "K뷰티산업융합학과",
+                region: "서울",
+                type: "재직자",
+                quota: 60,
+                category: "디자인/문화/예술",
+                evaluation: "서류 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 3년 이상 재직 중인 자",
+                notes: "뷰티, 바이오, 헬스케어 관련 실무 재직자 특화 과정",
+                link: "https://enter.konkuk.ac.kr"
+            },
+            {
+                id: 4,
+                univ: "동국대학교",
+                dept: "융합보안학과",
+                region: "서울",
+                type: "재직자",
+                quota: 45,
+                category: "IT/소프트웨어/AI",
+                evaluation: "1단계 서류 100% (3배수) / 2단계 성적 70% + 면접 30%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업자 및 산업체 3년 이상 근무자",
+                notes: "보안·IT 현장 실무자를 위한 정보보안 및 소프트웨어 전문 교육",
+                link: "https://ipsi.dongguk.edu"
+            },
+            {
+                id: 5,
+                univ: "숭실대학교",
+                dept: "금융정보공학과",
+                region: "서울",
+                type: "재직자",
+                quota: 52,
+                category: "IT/소프트웨어/AI",
+                evaluation: "서류 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 3년 이상 현장 재직자",
+                notes: "핀테크, 금융데이터 분석 중심. 평일 야간 및 토요일 수업",
+                link: "https://iphak.ssu.ac.kr"
+            },
+            {
+                id: 6,
+                univ: "국민대학교",
+                dept: "기업경영학부",
+                region: "서울",
+                type: "재직자",
+                quota: 92,
+                category: "경영/경제/사무",
+                evaluation: "서류 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업생 중 재직기간 3년 이상",
+                notes: "경영학 전공 실무 교육, 온라인 강좌 비중 높음",
+                link: "https://admission.kookmin.ac.kr"
+            },
+            {
+                id: 7,
+                univ: "한양대학교",
+                dept: "컴퓨터소프트웨어학부 (특성화고특별)",
+                region: "서울",
+                type: "특성화고",
+                quota: 12,
+                category: "IT/소프트웨어/AI",
+                evaluation: "학생부교과 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "없음",
+                eligibility: "특성화고 졸업(예정)자로서 모집단위별 동일계열 기준 충족자",
+                notes: "정규 주간 과정. 기준학과 동일계열 이수 확인 필수",
+                link: "https://go.hanyang.ac.kr"
+            },
+            {
+                id: 8,
+                univ: "서울과학기술대학교",
+                dept: "융합공학좌 (정밀기계공학과)",
+                region: "서울",
+                type: "재직자",
+                quota: 30,
+                category: "공학/신소재/기계",
+                evaluation: "서류 60% + 면접 40%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "국립대 재직자 전형 / 특성화고 졸업 후 3년 이상 재직자",
+                notes: "국립대 등록금 혜택 및 공학 학사 학위 취득 가능",
+                link: "https://admission.seoultech.ac.kr"
+            },
+
+            // 경기 / 인천권
+            {
+                id: 9,
+                univ: "한양대학교(ERICA)",
+                dept: "ICT융합학부 (재직자)",
+                region: "경기/인천",
+                type: "재직자",
+                quota: 55,
+                category: "IT/소프트웨어/AI",
+                evaluation: "서류평가 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 산업체 3년 이상 근무자",
+                notes: "안산 ERICA 캠퍼스, IT SW 융합 직무 역량 강화",
+                link: "https://go.hanyang.ac.kr"
+            },
+            {
+                id: 10,
+                univ: "가천대학교",
+                dept: "바이오헬스솔루션학과",
+                region: "경기/인천",
+                type: "재직자",
+                quota: 40,
+                category: "보건/간호/의료",
+                evaluation: "학생부교과 60% + 면접 40%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업자 및 3년 이상 재직자",
+                notes: "바이오, 제약, 의료기기 분야 특화 주말/야간 연계",
+                link: "https://gachon.ac.kr/admission"
+            },
+            {
+                id: 11,
+                univ: "인하대학교",
+                dept: "소프트웨어융합학과",
+                region: "경기/인천",
+                type: "재직자",
+                quota: 38,
+                category: "IT/소프트웨어/AI",
+                evaluation: "서류평가 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 3년 이상 현장 재직자",
+                notes: "인천 지역 산업단지 재직자 호응도 높음",
+                link: "https://dept.inha.ac.kr/user/admission"
+            },
+            {
+                id: 12,
+                univ: "가톨릭대학교",
+                dept: "경영학부 (특성화고특별전형)",
+                region: "경기/인천",
+                type: "특성화고",
+                quota: 15,
+                category: "경영/경제/사무",
+                evaluation: "학생부교과 100%",
+                suneung: "Y",
+                suneungDetail: "수능 최저 적용: 국/수/영/탐 중 2개 합 7 이내",
+                workReq: "없음",
+                eligibility: "특성화고 졸업(예정)자 중 학과 동일계열 인정자",
+                notes: "수능 최저 기준 확인 필수, 교과 성적 우수자 유리",
+                link: "https://ipsi.catholic.ac.kr"
+            },
+
+            // 충청권
+            {
+                id: 13,
+                univ: "충남대학교",
+                dept: "기계·재료공학부 (특성화고출신재직자)",
+                region: "충청권",
+                type: "재직자",
+                quota: 30,
+                category: "공학/신소재/기계",
+                evaluation: "서류 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 3년 이상 산업체 재직 중인 자",
+                notes: "대전/충청 거점국립대, 국립대 등록금 지원 혜택",
+                link: "https://plus.cnu.ac.kr/html/hub/sub01/sub01_01.html"
+            },
+            {
+                id: 14,
+                univ: "충북대학교",
+                dept: "스마트배터리융합공학과",
+                region: "충청권",
+                type: "재직자",
+                quota: 25,
+                category: "공학/신소재/기계",
+                evaluation: "서류 60% + 면접 40%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 재직기간 3년 이상",
+                notes: "청주 오창 이차전지 특화단지 연계 재직자 맞춤 교육",
+                link: "https://ipsi.chungbuk.ac.kr"
+            },
+            {
+                id: 15,
+                univ: "국립한밭대학교",
+                dept: "스마트호스피탈리티학과",
+                region: "충청권",
+                type: "재직자",
+                quota: 35,
+                category: "기타/융합",
+                evaluation: "학생부 100% (면접 미실시)",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업자 및 재직 3년 이상자",
+                notes: "산학협력 특화 국립대, 토요일 전전업 집중 수업 방식",
+                link: "https://www.hanbat.ac.kr"
+            },
+            {
+                id: 16,
+                univ: "고려대학교(세종)",
+                dept: "글로벌경영익스퍼트학과",
+                region: "충청권",
+                type: "재직자",
+                quota: 40,
+                category: "경영/경제/사무",
+                evaluation: "서류 70% + 면접 30%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업자 중 통산 3년 이상 근무자",
+                notes: "세종캠퍼스 위치, 글로벌 경영 및 데이터 분석 실무",
+                link: "https://sejong.korea.ac.kr"
+            },
+
+            // 영남권
+            {
+                id: 17,
+                univ: "경북대학교",
+                dept: "신소재공학부 (특성화고특별)",
+                region: "영남권",
+                type: "특성화고",
+                quota: 10,
+                category: "공학/신소재/기계",
+                evaluation: "학생부교과 100%",
+                suneung: "Y",
+                suneungDetail: "수능 최저 적용: 2개 영역 합 6 이내",
+                workReq: "없음",
+                eligibility: "특성화고 졸업(예정)자, 기준학과 충족자",
+                notes: "대구 거점 국립대 주간 과정, 높은 교과 성적 요구",
+                link: "https://ipsi1.knu.ac.kr"
+            },
+            {
+                id: 18,
+                univ: "부산대학교",
+                dept: "금융정보학과 (재직자)",
+                region: "영남권",
+                type: "재직자",
+                quota: 30,
+                category: "경영/경제/사무",
+                evaluation: "서류평가 80% + 면접 20%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 후 3년 이상 재직자",
+                notes: "부산 문현 금융단지 및 지역 금융기관 재직자 특화",
+                link: "https://go.pusan.ac.kr"
+            },
+            {
+                id: 19,
+                univ: "국립부경대학교",
+                dept: "휴먼바이오융합공학과",
+                region: "영남권",
+                type: "재직자",
+                quota: 35,
+                category: "보건/간호/의료",
+                evaluation: "서류 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 및 산업체 3년 이상 재직",
+                notes: "바이오/헬스케어 기반 실무 연계 과정",
+                link: "https://pknu.ac.kr"
+            },
+
+            // 호남 / 강원 / 제주권
+            {
+                id: 20,
+                univ: "전남대학교",
+                dept: "스마트수산자원학과",
+                region: "호남/강원/제주",
+                type: "재직자",
+                quota: 25,
+                category: "기타/융합",
+                evaluation: "학생부 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 및 3년 이상 산업체 재직",
+                notes: "여수 캠퍼스, 수산·해양 융합 분야 재직자 대상",
+                link: "https://ao.jnu.ac.kr"
+            },
+            {
+                id: 21,
+                univ: "전북대학교",
+                dept: "스마트농생명학과",
+                region: "호남/강원/제주",
+                type: "재직자",
+                quota: 30,
+                category: "기타/융합",
+                evaluation: "서류 70% + 면접 30%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업생 및 재직기간 3년 이상",
+                notes: "전북 혁신도시 농생명 기관 재직자 교육 모듈",
+                link: "https://enter.jbnu.ac.kr"
+            },
+            {
+                id: 22,
+                univ: "강원대학교",
+                dept: "웰니스보건산업학과",
+                region: "호남/강원/제주",
+                type: "재직자",
+                quota: 20,
+                category: "보건/간호/의료",
+                evaluation: "학생부교과 100%",
+                suneung: "N",
+                suneungDetail: "수능 최저 미적용",
+                workReq: "3년이상",
+                eligibility: "특성화고 졸업 및 3년 이상 근무자",
+                notes: "춘천 캠퍼스, 주말 및 온라인 병행 수업",
+                link: "https://admission.kangwon.ac.kr"
+            }
+        ];
+
+        // State Management
+        let bookmarks = JSON.parse(localStorage.getItem('scrap_unis') || '[]');
+        let viewMode = 'grid'; // 'grid' | 'table'
+        let currentFilteredData = [...UNIVERSITY_DATA];
+
+        // DOM Elements
+        const gridViewEl = document.getElementById('gridView');
+        const tableViewEl = document.getElementById('tableView');
+        const tableBodyEl = document.getElementById('tableBody');
+        const emptyStateEl = document.getElementById('emptyState');
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            initIcons();
+            updateStats();
+            renderData();
+            setupEventListeners();
+            updateBookmarkBadge();
+            document.getElementById('reportDate').textContent = new Date().toLocaleDateString('ko-KR');
+        });
+
+        function initIcons() {
+            lucide.createIcons();
+        }
+
+        // Render Functions
+        function renderData() {
+            const data = filterData();
+            currentFilteredData = data;
+            document.getElementById('resultCount').textContent = data.length;
+
+            if (data.length === 0) {
+                gridViewEl.classList.add('hidden');
+                tableViewEl.classList.add('hidden');
+                emptyStateEl.classList.remove('hidden');
+                return;
+            }
+
+            emptyStateEl.classList.add('hidden');
+
+            if (viewMode === 'grid') {
+                gridViewEl.classList.remove('hidden');
+                tableViewEl.classList.add('hidden');
+                renderGrid(data);
+            } else {
+                gridViewEl.classList.add('hidden');
+                tableViewEl.classList.remove('hidden');
+                renderTable(data);
+            }
+
+            initIcons();
+        }
+
+        function renderGrid(data) {
+            gridViewEl.innerHTML = data.map(item => {
+                const isBookmarked = bookmarks.some(b => b.id === item.id);
+                const typeClass = item.type === '재직자' 
+                    ? 'bg-amber-100 text-amber-800 border-amber-200' 
+                    : 'bg-sky-100 text-sky-800 border-sky-200';
+                
+                return `
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition duration-200 flex flex-col justify-between relative group">
+                        <div>
+                            <!-- Header Tags -->
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-md border ${typeClass}">
+                                        ${item.type === '재직자' ? '선취업후진학(재직자)' : '특성화고 특별전형'}
+                                    </span>
+                                    <span class="text-[11px] font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
+                                        ${item.region}
+                                    </span>
+                                </div>
+                                <button onclick="toggleBookmark(${item.id})" class="text-slate-300 hover:text-amber-500 transition p-1" title="관심 대학 스크랩">
+                                    <i data-lucide="bookmark" class="w-5 h-5 ${isBookmarked ? 'text-amber-500 fill-amber-500' : ''}"></i>
+                                </button>
+                            </div>
+
+                            <!-- Title -->
+                            <h3 class="text-lg font-bold text-navy-900 group-hover:text-sky-600 transition flex items-center justify-between">
+                                ${item.univ}
+                            </h3>
+                            <p class="text-sm font-semibold text-slate-700 mt-0.5 mb-4">${item.dept}</p>
+
+                            <!-- Key Specs Grid -->
+                            <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">모집 인원</span>
+                                    <span class="font-bold text-slate-800">${item.quota}명</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">전형 요소</span>
+                                    <span class="font-medium text-slate-800 text-right truncate max-w-[160px]" title="${item.evaluation}">${item.evaluation}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">수능 최저</span>
+                                    <span class="font-semibold ${item.suneung === 'Y' ? 'text-amber-600' : 'text-teal-600'}">
+                                        ${item.suneung === 'Y' ? '적용 있음' : '미적용 (없음)'}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">재직 요건</span>
+                                    <span class="font-medium text-slate-800">${item.workReq}</span>
+                                </div>
+                            </div>
+
+                            <p class="text-xs text-slate-500 mt-3 line-clamp-2">${item.notes}</p>
+                        </div>
+
+                        <!-- Footer Action -->
+                        <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-slate-400">${item.category}</span>
+                            <button onclick="openDetailModal(${item.id})" class="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1">
+                                상세 요강 보기 <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTable(data) {
+            tableBodyEl.innerHTML = data.map(item => {
+                const isBookmarked = bookmarks.some(b => b.id === item.id);
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="py-3 px-4 text-slate-500 font-medium">${item.region}</td>
+                        <td class="py-3 px-4 font-bold text-slate-900">${item.univ}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-800">${item.dept}</td>
+                        <td class="py-3 px-4">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.type === '재직자' ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800'}">
+                                ${item.type}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-center font-bold text-slate-800">${item.quota}명</td>
+                        <td class="py-3 px-4 text-slate-600">${item.evaluation}</td>
+                        <td class="py-3 px-4 text-center font-medium ${item.suneung === 'Y' ? 'text-amber-600' : 'text-teal-600'}">
+                            ${item.suneung === 'Y' ? '적용' : '미적용'}
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="openDetailModal(${item.id})" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium text-[11px]">
+                                보기
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Filtering & Sorting Logic
+        function filterData() {
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const type = document.getElementById('filterType').value;
+            const region = document.getElementById('filterRegion').value;
+            const category = document.getElementById('filterCategory').value;
+            const suneung = document.getElementById('filterSuneung').value;
+            const workReq = document.getElementById('filterWorkReq').value;
+            const sort = document.getElementById('filterSort').value;
+
+            let filtered = UNIVERSITY_DATA.filter(item => {
+                // Search Match
+                const matchSearch = !search || 
+                    item.univ.toLowerCase().includes(search) || 
+                    item.dept.toLowerCase().includes(search) || 
+                    item.category.toLowerCase().includes(search) ||
+                    item.notes.toLowerCase().includes(search);
+
+                // Type Match
+                const matchType = type === 'ALL' || item.type === type;
+
+                // Region Match
+                const matchRegion = region === 'ALL' || item.region === region;
+
+                // Category Match
+                const matchCategory = category === 'ALL' || item.category === category;
+
+                // Suneung Match
+                const matchSuneung = suneung === 'ALL' || item.suneung === suneung;
+
+                // Work Req Match
+                const matchWork = workReq === 'ALL' || item.workReq === workReq;
+
+                return matchSearch && matchType && matchRegion && matchCategory && matchSuneung && matchWork;
+            });
+
+            // Sorting
+            if (sort === 'univAsc') {
+                filtered.sort((a, b) => a.univ.localeCompare(b.univ, 'ko'));
+            } else if (sort === 'quotaDesc') {
+                filtered.sort((a, b) => b.quota - a.quota);
+            } else if (sort === 'region') {
+                filtered.sort((a, b) => a.region.localeCompare(b.region, 'ko'));
+            }
+
+            return filtered;
+        }
+
+        // Stats Counter Update
+        function updateStats() {
+            const totalUnis = new Set(UNIVERSITY_DATA.map(d => d.univ)).size;
+            const totalDepts = UNIVERSITY_DATA.length;
+            const metroCount = UNIVERSITY_DATA.filter(d => d.region === '서울' || d.region === '경기/인천').length;
+            const metroRatio = Math.round((metroCount / totalDepts) * 100);
+            const suneungCount = UNIVERSITY_DATA.filter(d => d.suneung === 'Y').length;
+
+            document.getElementById('statTotalUnis').textContent = totalUnis;
+            document.getElementById('statTotalDepts').textContent = totalDepts;
+            document.getElementById('statMetroRatio').textContent = `${metroRatio}%`;
+            document.getElementById('statSuneungCount').textContent = `${suneungCount}개`;
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Inputs
+            document.getElementById('searchInput').addEventListener('input', renderData);
+            document.getElementById('filterType').addEventListener('change', renderData);
+            document.getElementById('filterRegion').addEventListener('change', renderData);
+            document.getElementById('filterCategory').addEventListener('change', renderData);
+            document.getElementById('filterSuneung').addEventListener('change', renderData);
+            document.getElementById('filterWorkReq').addEventListener('change', renderData);
+            document.getElementById('filterSort').addEventListener('change', renderData);
+
+            // Reset
+            document.getElementById('btnResetFilters').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('filterType').value = 'ALL';
+                document.getElementById('filterRegion').value = 'ALL';
+                document.getElementById('filterCategory').value = 'ALL';
+                document.getElementById('filterSuneung').value = 'ALL';
+                document.getElementById('filterWorkReq').value = 'ALL';
+                document.getElementById('filterSort').value = 'univAsc';
+                renderData();
+                showToast('필터가 초기화되었습니다.');
+            });
+
+            // View Mode Switches
+            const btnGrid = document.getElementById('btnViewGrid');
+            const btnTable = document.getElementById('btnViewTable');
+
+            btnGrid.addEventListener('click', () => {
+                viewMode = 'grid';
+                btnGrid.className = 'px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-800 shadow-sm transition';
+                btnTable.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition';
+                renderData();
+            });
+
+            btnTable.addEventListener('click', () => {
+                viewMode = 'table';
+                btnTable.className = 'px-2.5 py-1 rounded-md text-xs font-medium bg-white text-slate-800 shadow-sm transition';
+                btnGrid.className = 'px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 transition';
+                renderData();
+            });
+
+            // Modals Close Event
+            document.getElementById('btnCloseModal').addEventListener('click', () => {
+                document.getElementById('detailModal').classList.add('hidden');
+            });
+            document.getElementById('btnCloseBookmark').addEventListener('click', () => {
+                document.getElementById('bookmarkModal').classList.add('hidden');
+            });
+            document.getElementById('btnCloseCompare').addEventListener('click', () => {
+                document.getElementById('compareModal').classList.add('hidden');
+            });
+
+            // Open Bookmark Modal
+            document.getElementById('btnBookmarkModal').addEventListener('click', openBookmarkModal);
+
+            // Open Compare Modal
+            document.getElementById('btnCompareModal').addEventListener('click', openCompareModal);
+
+            // GitHub Pages Deployment Guide Modal Event
+            const githubModal = document.getElementById('githubModal');
+            document.getElementById('btnGithubGuide').addEventListener('click', () => {
+                githubModal.classList.remove('hidden');
+            });
+            document.getElementById('btnCloseGithub').addEventListener('click', () => {
+                githubModal.classList.add('hidden');
+            });
+            document.getElementById('btnConfirmGithub').addEventListener('click', () => {
+                githubModal.classList.add('hidden');
+            });
+
+            // Clear Bookmarks
+            document.getElementById('btnClearBookmarks').addEventListener('click', () => {
+                if (confirm('스크랩한 모든 대학을 삭제하시겠습니까?')) {
+                    bookmarks = [];
+                    localStorage.setItem('scrap_unis', JSON.stringify(bookmarks));
+                    updateBookmarkBadge();
+                    openBookmarkModal();
+                    renderData();
+                    showToast('스크랩이 전체 삭제되었습니다.');
+                }
+            });
+
+            // Export CSV
+            document.getElementById('btnExportCSV').addEventListener('click', exportCSV);
+
+            // Print Comparison Report
+            document.getElementById('btnPrintCompare').addEventListener('click', () => {
+                window.print();
+            });
+        }
+
+        // Detail Modal Controller
+        function openDetailModal(id) {
+            const item = UNIVERSITY_DATA.find(d => d.id === id);
+            if (!item) return;
+
+            document.getElementById('modalRegionBadge').textContent = item.region;
+            document.getElementById('modalTypeBadge').textContent = item.type === '재직자' ? '선취업후진학' : '특성화고특별';
+            document.getElementById('modalUnivName').textContent = item.univ;
+            document.getElementById('modalDeptName').textContent = item.dept;
+            document.getElementById('modalQuota').textContent = `${item.quota}명`;
+            document.getElementById('modalSuneung').textContent = item.suneung === 'Y' ? '적용' : '미적용';
+            document.getElementById('modalWorkReq').textContent = item.workReq;
+            document.getElementById('modalCategory').textContent = item.category;
+
+            document.getElementById('modalEvaluation').textContent = item.evaluation;
+            document.getElementById('modalEligibility').textContent = item.eligibility;
+            document.getElementById('modalNotes').innerHTML = `
+                <p><strong>수능 최저 세부:</strong> ${item.suneungDetail}</p>
+                <p class="mt-1"><strong>학과 및 전형 팁:</strong> ${item.notes}</p>
+            `;
+            document.getElementById('modalUnivLink').href = item.link;
+
+            // Bookmark Button in Modal
+            const btnBM = document.getElementById('modalBtnBookmark');
+            const isBookmarked = bookmarks.some(b => b.id === item.id);
+            btnBM.onclick = () => {
+                toggleBookmark(item.id);
+                openDetailModal(item.id);
+            };
+            btnBM.querySelector('span').textContent = isBookmarked ? '스크랩 해제' : '스크랩 추가';
+
+            // Copy Button
+            document.getElementById('modalBtnCopy').onclick = () => {
+                const text = `[대학 진학 정보]\n대학명: ${item.univ}\n학과명: ${item.dept}\n전형: ${item.type}\n모집인원: ${item.quota}명\n전형요소: ${item.evaluation}\n수능최저: ${item.suneungDetail}\n재직요건: ${item.workReq}`;
+                copyToClipboard(text);
+            };
+
+            document.getElementById('detailModal').classList.remove('hidden');
+            initIcons();
+        }
+
+        // Bookmark Logic
+        function toggleBookmark(id) {
+            const index = bookmarks.findIndex(b => b.id === id);
+            if (index > -1) {
+                bookmarks.splice(index, 1);
+                showToast('스크랩에서 제거되었습니다.');
+            } else {
+                const item = UNIVERSITY_DATA.find(d => d.id === id);
+                if (item) {
+                    bookmarks.push(item);
+                    showToast('관심 대학으로 스크랩되었습니다.');
+                }
+            }
+            localStorage.setItem('scrap_unis', JSON.stringify(bookmarks));
+            updateBookmarkBadge();
+            renderData();
+        }
+
+        function updateBookmarkBadge() {
+            document.getElementById('bookmarkBadge').textContent = bookmarks.length;
+        }
+
+        function openBookmarkModal() {
+            const listEl = document.getElementById('bookmarkList');
+            const emptyEl = document.getElementById('bookmarkEmpty');
+
+            if (bookmarks.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.classList.remove('hidden');
+            } else {
+                emptyEl.classList.add('hidden');
+                listEl.innerHTML = bookmarks.map(item => `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                        <div>
+                            <span class="font-bold text-slate-900">${item.univ}</span> - <span class="font-medium text-slate-700">${item.dept}</span>
+                            <div class="text-[11px] text-slate-500 mt-0.5">${item.type} | 모집 ${item.quota}명 | ${item.evaluation}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openDetailModal(${item.id}); document.getElementById('bookmarkModal').classList.add('hidden');" class="px-2.5 py-1 bg-white border border-slate-300 text-slate-700 rounded hover:bg-slate-100 font-medium">상세</button>
+                            <button onclick="toggleBookmark(${item.id}); openBookmarkModal();" class="text-rose-500 hover:text-rose-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('bookmarkModal').classList.remove('hidden');
+            initIcons();
+        }
+
+        // Comparison Report Logic
+        function openCompareModal() {
+            const compareContent = document.getElementById('compareContent');
+            const dataToCompare = bookmarks.length > 0 ? bookmarks : currentFilteredData.slice(0, 5);
+
+            if (dataToCompare.length === 0) {
+                compareContent.innerHTML = '<p class="text-center py-8 text-slate-500">비교할 대학 데이터가 없습니다.</p>';
+            } else {
+                compareContent.innerHTML = `
+                    <table class="w-full text-left border-collapse text-xs min-w-[600px]">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-300">
+                                <th class="p-3 border-r border-slate-200 font-bold">구분</th>
+                                ${dataToCompare.map(d => `<th class="p-3 border-r border-slate-200 font-bold text-navy-900">${d.univ}<br><span class="text-sky-600 font-normal">${d.dept}</span></th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="p-3 font-semibold bg-slate-50 border-r border-slate-200">전형 유형</td>
+                                ${dataToCompare.map(d => `<td class="p-3 border-r border-slate-200">${d.type}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold bg-slate-50 border-r border-slate-200">모집 인원</td>
+                                ${dataToCompare.map(d => `<td class="p-3 border-r border-slate-200 font-bold">${d.quota}명</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold bg-slate-50 border-r border-slate-200">전형 요소</td>
+                                ${dataToCompare.map(d => `<td class="p-3 border-r border-slate-200">${d.evaluation}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold bg-slate-50 border-r border-slate-200">수능 최저</td>
+                                ${dataToCompare.map(d => `<td class="p-3 border-r border-slate-200">${d.suneungDetail}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold bg-slate-50 border-r border-slate-200">재직 요건</td>
+                                ${dataToCompare.map(d => `<td class="p-3 border-r border-slate-200">${d.workReq}</td>`).join('')}
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold bg-slate-50 border-r border-slate-200">특이 사항</td>
+                                ${dataToCompare.map(d => `<td class="p-3 border-r border-slate-200 text-slate-600">${d.notes}</td>`).join('')}
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            document.getElementById('compareModal').classList.remove('hidden');
+        }
+
+        // CSV Export Helper
+        function exportCSV() {
+            if (currentFilteredData.length === 0) {
+                showToast('다운로드할 데이터가 없습니다.');
+                return;
+            }
+
+            const headers = ["권역", "대학명", "학과명", "전형유형", "모집인원", "계열", "전형요소", "수능최저여부", "재직요건", "상세안내"];
+            const rows = currentFilteredData.map(d => [
+                `"${d.region}"`,
+                `"${d.univ}"`,
+                `"${d.dept}"`,
+                `"${d.type}"`,
+                d.quota,
+                `"${d.category}"`,
+                `"${d.evaluation}"`,
+                `"${d.suneung}"`,
+                `"${d.workReq}"`,
+                `"${d.notes.replace(/"/g, '""')}"`
+            ]);
+
+            const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `전국_선취업후진학_특성화고전형_목록_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showToast('CSV 파일 다운로드가 시작되었습니다.');
+        }
+
+        // Utility: Clipboard Copy
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('상담용 텍스트가 클립보드에 복사되었습니다.');
+            } catch (err) {
+                showToast('복사에 실패했습니다.');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // Utility: Toast Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
